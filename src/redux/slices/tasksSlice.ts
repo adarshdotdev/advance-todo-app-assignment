@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+const laodTasks = () => {
+  const tasks = localStorage.getItem("tasks");
+  return tasks ? JSON.parse(tasks) : [];
+};
+
 interface Task {
   id: string;
   title: string;
@@ -11,7 +16,7 @@ interface TaskState {
 }
 
 const initialState: TaskState = {
-  tasks: [],
+  tasks: laodTasks(),
 };
 
 const tasksSlice = createSlice({
@@ -20,10 +25,12 @@ const tasksSlice = createSlice({
   reducers: {
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
     },
 
     deleteTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
     },
   },
 });
